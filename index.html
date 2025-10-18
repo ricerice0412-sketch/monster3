@@ -3,20 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AR — FINAL</title>
+  <title>Monster 3 AR</title>
+
+  <!-- Google Model Viewer -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+
   <style>
-    html,body{margin:0;height:100%;background:#000;}
-    model-viewer{width:100%;height:100%;display:block;}
-    /* 万一旧页面里还残留 .hint 元素，强制隐藏 */
-    .hint{display:none !important;}
-    #err{position:fixed;left:12px;bottom:12px;color:#f55;font:13px/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;display:none;}
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: #000;
+    }
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    .hint { display: none !important; }
+    #err {
+      position: fixed;
+      left: 12px;
+      bottom: 12px;
+      color: #f55;
+      font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: none;
+    }
   </style>
+
   <meta name="theme-color" content="#000"/>
 </head>
+
 <body>
   <model-viewer
     id="mv"
+    src="https://ricerice0412-sketch.github.io/monster3/m3.glb"
+    ios-src="https://ricerice0412-sketch.github.io/monster3/m3.usdz"
     ar
     ar-modes="webxr scene-viewer quick-look"
     ar-scale="auto"
@@ -29,30 +50,22 @@
     shadow-intensity="1"
     environment-image="neutral">
   </model-viewer>
+
   <div id="err"></div>
 
   <script>
-    // ======== 把这两行改成你的线上目录与模型名 ========
-    // 例：const BASE = "https://ricerice0412-sketch.github.io/monster3/";
-    // 或：const BASE = "https://ricerice0412-sketch.github.io/letthemonsterspeak/monster2/";
-    const BASE  = "https://YOUR-USERNAME.github.io/YOUR-FOLDER/"; // <--- 必改，结尾要有 /
-    const MODEL = "m3.glb";                                        // <--- 必改：你的模型文件名
-    // 如需要 iPhone AR，还要准备同名 .usdz：例如 m3.usdz
-    // ================================================
-
     const mv = document.getElementById('mv');
-    const bust = 'v=' + Date.now();       // 防缓存
-    mv.src = `${BASE}${MODEL}?${bust}`;
-    // 如果已有 usdz，打开下一行：
-    // mv.setAttribute('ios-src', `${BASE}${MODEL.replace(/\.glb$/i,'.usdz')}?${bust}`);
 
-    // 初始缩小，避免顶到相机
-    mv.addEventListener('load', () => { mv.scale = '0.4 0.4 0.4'; });
+    // 模型载入后自动缩放，避免太大顶到镜头
+    mv.addEventListener('load', () => {
+      mv.scale = '0.4 0.4 0.4';
+      console.log('✅ Model loaded successfully.');
+    });
 
-    // 出错时显示可见信息，方便你排查是不是 404（路径错）
+    // 出错时显示红字提示（方便你查路径问题）
     mv.addEventListener('error', (e) => {
       const el = document.getElementById('err');
-      el.textContent = "❌ 模型加载失败： " + mv.src;
+      el.textContent = "❌ 模型加载失败，请检查路径：" + mv.src;
       el.style.display = 'block';
       console.error('model-viewer error:', e.message);
     });
