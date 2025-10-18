@@ -4,68 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Monster 3 AR</title>
-
-  <!-- Google Model Viewer -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
-
   <style>
-    html, body {
-      margin: 0;
-      height: 100%;
-      background: #000;
-    }
-    model-viewer {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
-    .hint { display: none !important; }
-    #err {
-      position: fixed;
-      left: 12px;
-      bottom: 12px;
-      color: #f55;
-      font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      display: none;
-    }
+    html,body{margin:0;height:100%;background:#000;}
+    model-viewer{width:100%;height:100%;display:block;}
+    .hint{display:none!important}
+    #err{position:fixed;left:12px;bottom:12px;color:#f55;font:13px/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;display:none}
   </style>
-
-  <meta name="theme-color" content="#000"/>
 </head>
-
 <body>
   <model-viewer
     id="mv"
-    src="https://ricerice0412-sketch.github.io/monster3/m3.glb"
-    ios-src="https://ricerice0412-sketch.github.io/monster3/m3.usdz"
+    src="https://ricerice0412-sketch.github.io/monster3/m3.glb?v=1"  <!-- 绝对URL，避免AR时相对路径404 -->
     ar
-    ar-modes="webxr scene-viewer quick-look"
+    ar-modes="scene-viewer webxr"          <!-- 不触发 iPhone 的 quick-look；无 usdz 也不报错 -->
     ar-scale="auto"
     ar-placement="floor"
     camera-controls
     auto-rotate
-    min-camera-orbit="auto auto 0.5m"
-    max-camera-orbit="auto auto 10m"
-    camera-orbit="0deg 75deg 2.5m"
     shadow-intensity="1"
     environment-image="neutral">
   </model-viewer>
-
   <div id="err"></div>
 
   <script>
+    // 可选：防止模型太大贴到相机，按需改 0.2~1
     const mv = document.getElementById('mv');
-
-    // 模型载入后自动缩放，避免太大顶到镜头
-    mv.addEventListener('load', () => {
-      mv.scale = '0.4 0.4 0.4';
-      console.log('✅ Model loaded successfully.');
-    });
-
-    // 出错时显示红字提示（方便你查路径问题）
-    mv.addEventListener('error', (e) => {
+    mv.addEventListener('load', () => { mv.scale = '0.4 0.4 0.4'; });
+    mv.addEventListener('error', e => {
       const el = document.getElementById('err');
-      el.textContent = "❌ 模型加载失败，请检查路径：" + mv.src;
+      el.textContent = "❌ 加载失败：" + mv.src;
       el.style.display = 'block';
       console.error('model-viewer error:', e.message);
     });
