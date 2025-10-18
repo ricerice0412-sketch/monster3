@@ -4,29 +4,49 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Monster 3 AR</title>
-  <!-- Google Model Viewer -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
   <style>
     html,body{margin:0;height:100%;background:#000;}
-    model-viewer{width:100%;height:100%;}
-    .hint{position:fixed;left:12px;bottom:12px;color:#fff;font:14px/1.3 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;opacity:.8}
+    model-viewer{width:100%;height:100%;display:block;}
+    #err{position:fixed;inset:auto 0 0 0;color:#f55;padding:10px 12px;font:13px/1.4 -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;display:none;}
   </style>
   <meta name="theme-color" content="#000"/>
 </head>
 <body>
   <model-viewer
-    src="./m3.glb"
-    <!-- 若以后有 iPhone 的 USDZ，可去掉下一行注释并把文件放同层 -->
-    <!-- ios-src="./m3.usdz" -->
+    id="mv"
     ar
     ar-modes="webxr scene-viewer quick-look"
-    ar-scale="fixed"
+    ar-scale="auto"
+    ar-placement="floor"
     camera-controls
     auto-rotate
     shadow-intensity="1"
     environment-image="neutral">
   </model-viewer>
+  <div id="err"></div>
 
-  <div class="hint">📱 iPhone 用 Safari ｜ 🤖 Android 用 Chrome</div>
+  <script>
+    // ⚠️ 把 BASE 改成你的网页目录（以 / 结尾）
+    // 例：const BASE = "https://ricerice0412-sketch.github.io/monster3/";
+    const BASE = "https://YOUR-USERNAME.github.io/YOUR-FOLDER/"; // <— 改这里
+
+    const mv = document.getElementById('mv');
+    const bust = 'v=' + Date.now(); // 防缓存
+    mv.src = BASE + "m3.glb?" + bust;
+    // 如果有 iPhone 用的 USDZ 文件，请取消下一行注释：
+    // mv.setAttribute('ios-src', BASE + "m3.usdz?" + bust);
+
+    // 模型太大时自动缩小一点
+    mv.addEventListener('load', () => { mv.scale = '0.4 0.4 0.4'; });
+
+    // 出错提示
+    mv.addEventListener('error', (e) => {
+      const el = document.getElementById('err');
+      el.textContent = "❌ 模型加载失败，请检查路径：" + mv.src;
+      el.style.display = 'block';
+      console.error('model-viewer error:', e.message);
+    });
+  </script>
 </body>
 </html>
